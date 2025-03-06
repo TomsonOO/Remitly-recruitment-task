@@ -22,9 +22,10 @@
     "migration:generate": "typeorm migration:generate -- -n"
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.1",
+    "@nestjs/common": "^11.0.11",
     "@nestjs/config": "^4.0.0",
-    "@nestjs/core": "^11.0.1",
+    "@nestjs/core": "^11.0.11",
+    "@nestjs/cqrs": "^11.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
     "pg": "^8.13.3",

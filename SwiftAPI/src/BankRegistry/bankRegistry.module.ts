@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CqrsModule } from '@nestjs/cqrs';
+import {SwiftCodeController} from "./Infrastructure/Controller/SwiftCodeController";
+import {GetSwiftCodeDetailsQueryHandler} from "./Application/GetSwiftCodeDetails/GetSwiftCodeDetailsQueryHandler";
+import {PostgresSwiftCodeRepository} from "./Infrastructure/Persistence/PostgresSwiftCodeRepository";
+import {SwiftCodeEntity} from "./Domain/swift-code.entity";
 
 @Module({
     imports: [
@@ -18,14 +23,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 __dirname + '/**/*.entity{.ts,.js}',
             ],
             synchronize: true,
-
-
-        })
-
-
-
+        }),
+        TypeOrmModule.forFeature([SwiftCodeEntity]),
+        CqrsModule,
     ],
-    controllers: [],
-    providers: [],
+    controllers: [SwiftCodeController],
+    providers: [
+        GetSwiftCodeDetailsQueryHandler,
+        {
+            provide: 'SwiftCodeRepositoryPort',
+            useClass: PostgresSwiftCodeRepository,
+        }
+    ],
 })
 export class BankRegistryModule {}
+
+
+
