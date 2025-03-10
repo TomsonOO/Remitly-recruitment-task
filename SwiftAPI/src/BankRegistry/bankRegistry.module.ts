@@ -6,6 +6,13 @@ import {SwiftCodeController} from "./Infrastructure/Controller/SwiftCodeControll
 import {GetSwiftCodeDetailsQueryHandler} from "./Application/GetSwiftCodeDetails/GetSwiftCodeDetailsQueryHandler";
 import {PostgresSwiftCodeRepository} from "./Infrastructure/Persistence/PostgresSwiftCodeRepository";
 import {SwiftCodeEntity} from "./Domain/swift-code.entity";
+import {
+    GetSwiftCodesForCountryQueryHandler
+} from "./Application/GetSwiftCodesForCountry/GetSwiftCodesForCountryQueryHandler";
+import { SwiftCodeExcelImporter } from './Infrastructure/Import/SwiftCodeExcelImporter';
+import { CountryEntity } from './Domain/country.entity';
+import { BankEntity } from './Domain/bank.entity';
+import { AddressEntity } from './Domain/address.entity';
 
 @Module({
     imports: [
@@ -24,19 +31,24 @@ import {SwiftCodeEntity} from "./Domain/swift-code.entity";
             ],
             synchronize: true,
         }),
-        TypeOrmModule.forFeature([SwiftCodeEntity]),
+        TypeOrmModule.forFeature([
+            SwiftCodeEntity,
+            CountryEntity,
+            BankEntity,
+            AddressEntity
+        ]),
         CqrsModule,
     ],
     controllers: [SwiftCodeController],
     providers: [
         GetSwiftCodeDetailsQueryHandler,
+        GetSwiftCodesForCountryQueryHandler,
+        SwiftCodeExcelImporter,
         {
             provide: 'SwiftCodeRepositoryPort',
             useClass: PostgresSwiftCodeRepository,
         }
     ],
+    exports: [SwiftCodeExcelImporter]
 })
 export class BankRegistryModule {}
-
-
-
