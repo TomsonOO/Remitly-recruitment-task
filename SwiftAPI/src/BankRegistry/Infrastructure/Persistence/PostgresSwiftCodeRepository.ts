@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SwiftCodeRepositoryPort } from '../../Application/Port/SwiftCodeRepositoryPort';
 import { SwiftCodeEntity } from '../../Domain/swift-code.entity';
 import { SwiftCodeWithBankCountry } from '../../Application/Port/types';
+import { CountrySwiftCodesDto } from '../../Application/DTO/CountrySwiftCodesDto';
 
 @Injectable()
 export class PostgresSwiftCodeRepository implements SwiftCodeRepositoryPort {
@@ -55,5 +56,32 @@ export class PostgresSwiftCodeRepository implements SwiftCodeRepositoryPort {
             countryISO2: b.address.country.iso2Code,
             countryName: b.address.country.name,
         }));
+    }
+    async findByCountry(countryISO2: string): Promise<CountrySwiftCodesDto | null> {
+        const swiftCodes = await this.repository
+            .createQueryBuilder('swiftCode')
+            .leftJoinAndSelect('swiftCode.bank', 'bank')
+            .leftJoinAndSelect('swiftCode.address', 'address')
+            .leftJoinAndSelect('address.country', 'country')
+            .where('country.iso2Code = :countryISO2', { countryISO2: countryISO2.toUpperCase() })
+            .getMany();
+    
+        if (!swiftCodes.length) {
+            return null;
+        }
+    
+        const country = swiftCodes[0].address.country;
+    
+        return {
+            countryISO2: country.iso2Code,
+            countryName: country.name,
+            swiftCodes: swiftCodes.map(code => ({
+                address: code.address.address,
+                bankName: code.bank.name,
+                countryISO2: country.iso2Code,
+                isHeadquarter: code.isHeadquarter,
+                swiftCode: code.swiftCode
+            }))
+        };
     }
 }
