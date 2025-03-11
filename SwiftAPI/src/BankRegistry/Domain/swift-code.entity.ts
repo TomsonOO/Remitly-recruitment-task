@@ -4,18 +4,18 @@ import { AddressEntity } from './address.entity';
 
 @Entity('swift_codes')
 export class SwiftCodeEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ unique: true })
-    swiftCode: string;
+  @Column({ unique: true })
+  swiftCode: string;
 
-    @Column()
-    isHeadquarter: boolean;
+  @Column()
+  isHeadquarter: boolean;
 
-    @ManyToOne(() => BankEntity, bank => bank.swiftCodes)
-    bank: BankEntity;
+  @ManyToOne(() => BankEntity, (bank) => bank.swiftCodes)
+  bank: BankEntity;
 
-    @ManyToOne(() => AddressEntity, address => address.swiftCodes)
-    address: AddressEntity;
+  @ManyToOne(() => AddressEntity, (address) => address.swiftCodes)
+  address: AddressEntity;
 }

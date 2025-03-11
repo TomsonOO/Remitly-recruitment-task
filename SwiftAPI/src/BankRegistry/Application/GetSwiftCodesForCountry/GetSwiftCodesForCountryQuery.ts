@@ -1,3 +1,3 @@
 export class GetSwiftCodesForCountryQuery {
-    constructor(public readonly countryISO2: string) {}
+  constructor(public readonly countryISO2: string) {}
 }
