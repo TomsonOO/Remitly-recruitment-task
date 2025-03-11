@@ -32,10 +32,7 @@ The API will be available at http://localhost:8080
 
 ### Testing
 
-1. Configure test environment:
-```bash
-cp .env.test.example .env.test
-```
+1. Configure test environment - provide credentials in .env for testing db
 
 2. Start the application with the test DB:
 ```bash
