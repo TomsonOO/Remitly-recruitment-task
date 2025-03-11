@@ -11,7 +11,7 @@ import { SwiftCodeExcelImporter } from './Infrastructure/Import/SwiftCodeExcelIm
 import { CountryEntity } from './Domain/country.entity';
 import { BankEntity } from './Domain/bank.entity';
 import { AddressEntity } from './Domain/address.entity';
-import { databaseConfig } from 'config/datbase.config';
+import { databaseConfig } from '../../config/datbase.config';
 
 @Module({
   imports: [
