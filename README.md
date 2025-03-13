@@ -38,6 +38,11 @@ The API will be available at http://localhost:8080
 ```bash
 docker compose --profile test up -d
 ```
+
+Note: In case of docker network errors, add `--force-recreate`:
+```bash
+docker compose --profile test up --force-recreate -d
+```
 3. Run tests:
 ```
 npm test
