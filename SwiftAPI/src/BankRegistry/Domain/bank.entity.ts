@@ -3,12 +3,12 @@ import { SwiftCodeEntity } from './swift-code.entity';
 
 @Entity('banks')
 export class BankEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ unique: true })
-    name: string;
+  @Column({ unique: true })
+  name: string;
 
-    @OneToMany(() => SwiftCodeEntity, swiftCode => swiftCode.bank)
-    swiftCodes: SwiftCodeEntity[];
+  @OneToMany(() => SwiftCodeEntity, (swiftCode) => swiftCode.bank)
+  swiftCodes: SwiftCodeEntity[];
 }
