@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: SwitfAPI-db
+    container_name: SwiftAPI-db
     image: postgres:latest
     environment:
       POSTGRES_USER: "${DB_USER}"
@@ -17,9 +17,22 @@ services:
     build:
       context: SwiftAPI/
       dockerfile: Dockerfile.dev
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - TEST_DB_HOST=${TEST_DB_HOST}
+      - TEST_DB_PORT=${TEST_DB_PORT}
+      - TEST_DB_USER=${TEST_DB_USER}
+      - TEST_DB_PASSWORD=${TEST_DB_PASSWORD}
+      - TEST_DB_NAME=${TEST_DB_NAME}
     volumes:
       - ./SwiftAPI:/app
       - node_modules:/app/node_modules
+    depends_on:
+      - db
 
   nginx:
     container_name: SwiftAPI-nginx
