@@ -5,12 +5,21 @@ import { SwiftCodeRepositoryPort } from '../../Application/Port/SwiftCodeReposit
 import { SwiftCodeEntity } from '../../Domain/swift-code.entity';
 import { SwiftCodeWithBankCountry } from '../../Application/Port/types';
 import { CountrySwiftCodesDto } from '../../Application/DTO/CountrySwiftCodesDto';
+import { BankEntity } from '../../Domain/bank.entity';
+import { CountryEntity } from '../../Domain/country.entity';
+import { AddressEntity } from '../../Domain/address.entity';
 
 @Injectable()
 export class PostgresSwiftCodeRepository implements SwiftCodeRepositoryPort {
   constructor(
     @InjectRepository(SwiftCodeEntity)
     private readonly repository: Repository<SwiftCodeEntity>,
+    @InjectRepository(BankEntity)
+    private readonly bankRepository: Repository<BankEntity>,
+    @InjectRepository(CountryEntity)
+    private readonly countryRepository: Repository<CountryEntity>,
+    @InjectRepository(AddressEntity)
+    private readonly addressRepository: Repository<AddressEntity>,
   ) {}
 
   async findSwiftCodeWithBankAndCountry(
@@ -87,5 +96,67 @@ export class PostgresSwiftCodeRepository implements SwiftCodeRepositoryPort {
         swiftCode: code.swiftCode,
       })),
     };
+  }
+
+  async createSwiftCode(params: {
+    swiftCode: string;
+    isHeadquarter: boolean;
+    bankName: string;
+    address: string;
+    townName: string;
+    countryISO2: string;
+    countryName: string;
+  }): Promise<void> {
+    const { swiftCode, isHeadquarter, bankName, address, townName, countryISO2, countryName } = params;
+
+    let bank = await this.bankRepository.findOne({ where: { name: bankName } });
+    if (!bank) {
+      bank = this.bankRepository.create({ name: bankName });
+      await this.bankRepository.save(bank);
+    }
+
+    let country = await this.countryRepository.findOne({ where: { iso2Code: countryISO2 } });
+    if (!country) {
+      country = this.countryRepository.create({ iso2Code: countryISO2, name: countryName });
+      await this.countryRepository.save(country);
+    }
+
+    const addressEntity = this.addressRepository.create({ address, townName, country });
+    await this.addressRepository.save(addressEntity);
+
+    const swiftCodeEntity = this.repository.create({
+      swiftCode,
+      isHeadquarter,
+      bank,
+      address: addressEntity,
+    });
+    await this.repository.save(swiftCodeEntity);
+  }
+
+  async deleteSwiftCode(swiftCode: string): Promise<boolean> {
+    const swiftCodeEntity = await this.repository.findOne({
+      where: { swiftCode },
+      relations: ['address'],
+    });
+
+    if (!swiftCodeEntity) {
+      return false;
+    }
+
+    const addressId = swiftCodeEntity.address?.id;
+
+    await this.repository.remove(swiftCodeEntity);
+
+    if (addressId) {
+      const addressStillInUse = await this.repository.findOne({
+        where: { address: { id: addressId } },
+      });
+
+      if (!addressStillInUse) {
+        await this.addressRepository.delete(addressId);
+      }
+    }
+
+    return true;
   }
 }

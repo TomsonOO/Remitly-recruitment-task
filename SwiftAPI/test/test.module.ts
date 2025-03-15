@@ -12,6 +12,8 @@ import { SwiftCodeExcelImporter } from '../src/BankRegistry/Infrastructure/Impor
 import { CountryEntity } from '../src/BankRegistry/Domain/country.entity';
 import { BankEntity } from '../src/BankRegistry/Domain/bank.entity';
 import { AddressEntity } from '../src/BankRegistry/Domain/address.entity';
+import { CreateSwiftCodeCommandHandler } from '../src/BankRegistry/Application/CreateSwiftCode/CreateSwiftCodeCommandHandler';
+import { DeleteSwiftCodeCommandHandler } from '../src/BankRegistry/Application/DeleteSwiftCode/DeleteSwiftCodeCommandHandler';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { AddressEntity } from '../src/BankRegistry/Domain/address.entity';
     GetSwiftCodeDetailsQueryHandler,
     GetSwiftCodesForCountryQueryHandler,
     SwiftCodeExcelImporter,
+    CreateSwiftCodeCommandHandler,
+    DeleteSwiftCodeCommandHandler,
     {
       provide: 'SwiftCodeRepositoryPort',
       useClass: PostgresSwiftCodeRepository,
