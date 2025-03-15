@@ -8,5 +8,8 @@ export const databaseConfig: TypeOrmModuleOptions = {
     password: process.env.DB_PASSWORD || 'SwiftPassword',
     database: process.env.DB_NAME || 'SwiftDB',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: true,
+    synchronize: false,
+    migrations: [__dirname + '/../database/migrations/**/*{.ts,.js}'],
+    migrationsRun: false,
+    logging: false
 };
