@@ -12,6 +12,8 @@ import { CountryEntity } from './Domain/country.entity';
 import { BankEntity } from './Domain/bank.entity';
 import { AddressEntity } from './Domain/address.entity';
 import { databaseConfig } from '../../config/datbase.config';
+import { CreateSwiftCodeCommandHandler } from './Application/CreateSwiftCode/CreateSwiftCodeCommandHandler';
+import { DeleteSwiftCodeCommandHandler } from './Application/DeleteSwiftCode/DeleteSwiftCodeCommandHandler';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { databaseConfig } from '../../config/datbase.config';
     GetSwiftCodeDetailsQueryHandler,
     GetSwiftCodesForCountryQueryHandler,
     SwiftCodeExcelImporter,
+    CreateSwiftCodeCommandHandler,
+    DeleteSwiftCodeCommandHandler,
     {
       provide: 'SwiftCodeRepositoryPort',
       useClass: PostgresSwiftCodeRepository,
