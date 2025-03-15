@@ -21,8 +21,20 @@ cp .env.example .env
 ```bash
 docker compose up -d
 ```
+3. Run database migrations:
 
-3. Import SWIFT codes data (optional):
+    dev + test database: 
+```bash
+ docker compose run backend  npx typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts
+ ```
+
+```bash
+docker compose run backend  npx typeorm-ts-node-commonjs migration:run -d src/database/test-data-source.ts
+```
+If there's problem with running migration, alternative option is to change`  synchronize: false
+` to `  synchronize: true` in `src/database/test-data-source.ts` and `src/database/test-data-source.ts` and then restart docker containers.
+
+4. Import SWIFT codes data (optional):
 ```bash
 # Excel file should be placed in the resourced catalog
 docker exec SwiftAPI npm run import-swift-codes resources/swift-codes.xlsx
